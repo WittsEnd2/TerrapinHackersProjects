@@ -1,0 +1,31 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/font-awesome.css')
+    link(rel='stylesheet', href='/stylesheets/materialize.css')
+  body
+  nav
+    div(class="nav-wrapper container")
+      a.brand-logo(href='#!') TH
+      |  
+      a.button-collapse(href='#', data-activates='mobile-demo')
+        i(class="fa fa-2x fa-bars")
+      ul.right.hide-on-med-and-down
+        li
+          a(href='sass.html') About
+        li
+          a(href='badges.html') Login
+      ul#mobile-demo.side-nav
+        li
+          a(href='sass.html') About
+        li
+          a(href='badges.html') Login
+
+  block content
+    
+  script(src='/javascripts/jquery.js')
+  script(src='/javascripts/materialize.js')
+  script(src='/javascripts/main.js')
+    
