@@ -1,3 +1,1 @@
-$(document).ready(function(){
-  $(".button-collapse").sideNav();
-});
+console.log("Main.js works");
