@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    .container
+        form(method="POST")
+            .row
+                .col.s12
+                    label Username
+                    input(type="text" name="username" id="username" class="validate")
+            .row
+                .col.s12
+                    label Password
+                    input(type="password" name="password" id="password" class="validate")
+            .row
+                .col.s12
+                    input(type="submit" name="submit" value="Submit" class="center-align")
