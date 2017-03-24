@@ -1,28 +1,21 @@
-var crypto = require('crypto');
+var bcrypt = require('bcrypt');
 
-//createCipher(algorithm, password)
-function encrypt(text){
+exports.cryptPassword = function(password) {
+   bcrypt.genSalt(10, function(err, salt) {
+    if (err) 
+      return err;
 
-  var cipher = crypto.createCipher('aes-256-cbc','d6F3Efeq')
+    bcrypt.hash(password, salt, function(err, hash) {
+      return hash;
+    });
 
-  var crypted = cipher.update(text,'utf8','hex')
+  });
+};
 
-  crypted += cipher.final('hex');
-
-  return crypted;
-
-}
-
-
-
-function decrypt(text){
-
-  var decipher = crypto.createDecipher('aes-256-cbc','d6F3Efeq')
-
-  var dec = decipher.update(text,'hex','utf8')
-
-  dec += decipher.final('utf8');
-
-  return dec;
-
-}
+exports.comparePassword = function(password, userPassword) {
+   bcrypt.compare(password, userPassword, function(err, isPasswordMatch) {
+      if (err) 
+        return err;
+      return isPasswordMatch;
+   });
+};

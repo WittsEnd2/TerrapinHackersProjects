@@ -2,14 +2,16 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var mongo = require('mongodb').MongoClient;
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var MongoClient = require('mongodb');
+var monk = require('monk');
+var db = monk('localhost:27017/terrapin-hackers-projects');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login');
-var db = require('./db');
+// var db = require('./db');
 
 
 var app = express();
@@ -27,16 +29,24 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req,res,next){
+  req.db = db;
+  next();
+})
+
+
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/login', login);
 
-db.connect('mongodb://localhost:27017/terrapin-hackers-projects', function(err){
-  if (err){
-    console.log('Unable to connect to Mongo.');
-    process.exit(1);
-  }
-});
+
+// db.connect('mongodb://localhost:27017/terrapin-hackers-projects', function(err){
+//   if (err){
+//     console.log('Unable to connect to Mongo.');
+//     process.exit(1);
+//   }
+// });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
