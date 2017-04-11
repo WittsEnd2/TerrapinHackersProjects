@@ -1,4 +1,5 @@
 var express = require('express');
+var session = require('express-session');
 var encryption = require('../encrypt');
 var router = express.Router();
 
@@ -33,6 +34,8 @@ router.post('/', function(req,res,next){
       } else {
         console.log("Incorrect password/username");
       }
+      console.log(req.session.user);
+      req.session.save(); 
     }
   });
   

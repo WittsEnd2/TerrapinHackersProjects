@@ -3,7 +3,7 @@ var crypto = require('crypto');
 exports.hashPassword = function(password) {
     var salt = crypto.randomBytes(128).toString('base64');
     var iterations = 10000;
-    var hash = pbkdf2(password, salt, iterations, 512, 'sha512');
+    var hash = crypto.pbkdf2Sync(password, salt, iterations, 512, 'sha512');
     return {
         salt: salt,
         hash: hash,
