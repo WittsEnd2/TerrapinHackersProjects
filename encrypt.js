@@ -1,21 +1,16 @@
-var bcrypt = require('bcrypt');
+var crypto = require('crypto');
 
-exports.cryptPassword = function(password) {
-   bcrypt.genSalt(10, function(err, salt) {
-    if (err) 
-      return err;
+exports.hashPassword = function(password) {
+    var salt = crypto.randomBytes(128).toString('base64');
+    var iterations = 10000;
+    var hash = pbkdf2(password, salt, iterations, 512, 'sha512');
+    return {
+        salt: salt,
+        hash: hash,
+        iterations: iterations
+    };
+}
 
-    bcrypt.hash(password, salt, function(err, hash) {
-      return hash;
-    });
-
-  });
-};
-
-exports.comparePassword = function(password, userPassword) {
-   bcrypt.compare(password, userPassword, function(err, isPasswordMatch) {
-      if (err) 
-        return err;
-      return isPasswordMatch;
-   });
-};
+exports.isPasswordCorrect = function(savedHash, savedSalt, savedIterations, passwordAttempt) {
+    return savedHash.toString('binary') === crypto.pbkdf2Sync(passwordAttempt, savedSalt, savedIterations, 512, 'sha512').toString('binary');
+}

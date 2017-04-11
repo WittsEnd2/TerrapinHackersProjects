@@ -16,54 +16,27 @@ router.post('/', function(req,res,next){
   var db = req.db;
   
   var userName = req.body.username;
-  var password = encryption.cryptPassword(req.body.password);
+  const passwordField = req.body.password;
 
   var collection = db.get('users');
 
-  collection.insert({
+  collection.findOne({
     "username" : userName,
-    "password" : password
-  }, function(err,doc){
+  }, function(err, doc){;
     if(err) {
-      res.send("There was a problem adding the information to the db");
+      console.log("Error: ", err);
+
     } else {
-      res.redirect("login");
-    }
-  })
-})
-/*
-router.post('/', function(req, res, next){
-  db.connect('mongodb://localhost:27017/terrapin-hackers-projects', function(err){
-    if (err){
-      console.log('Unable to connect to Mongo.');
-      process.exit(1);
+      if (encryption.isPasswordCorrect(doc.password.hash, doc.password.salt, doc.password.iterations, passwordField)){
+        req.session.user = doc;
+        console.log("User successfully logged in!");
+      } else {
+        console.log("Incorrect password/username");
+      }
     }
   });
-  var userCollection = db.get().collection('users');
-  console.log(userCollection.find().pretty());
-  if (!userCollection) {
-    console.log("No collection found");
-    db.get().createCollection('users');
-    userCollection = db.get().collection('users');
-  } else {
-    console.log("Collection found");
-  }
-  if (userCollection.find({username : req.body.username}).count() != 0){
-    console.log(userCollection.find({username : req.body.username}).count());
-  } else {
-    console.log('User Not Found!');
-    userCollection.insert({
-      username : req.body.username,
-      password : crypto.encrypt(req.body.password)
-    });
-    
-  }
-  db.close();
-  res.redirect('/');
-  res.end('It worked!');
-
-})
-
-*/
-
+  
+  res.end();  
+  
+});
 module.exports = router;

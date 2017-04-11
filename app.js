@@ -1,4 +1,6 @@
+var http = require('http');
 var express = require('express');
+var session = require('express-session');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -8,9 +10,11 @@ var MongoClient = require('mongodb');
 var monk = require('monk');
 var db = monk('localhost:27017/terrapin-hackers-projects');
 
+
 var index = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login');
+var register = require('./routes/register');
 // var db = require('./db');
 
 
@@ -20,7 +24,14 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+app.set('trust proxy', 1);
+app.use(session({
+  secret: 'user',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {secure: true}
 
+}));
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -39,6 +50,8 @@ app.use(function(req,res,next){
 app.use('/', index);
 app.use('/users', users);
 app.use('/login', login);
+app.use('/register', register)
+
 
 
 // db.connect('mongodb://localhost:27017/terrapin-hackers-projects', function(err){
